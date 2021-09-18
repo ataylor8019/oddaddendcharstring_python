@@ -9,6 +9,8 @@
 # 09/12/2021
 import random
 import string
+import re
+
 
 
 # Primary driver entry point. Function calls the 3 functions that generate
@@ -69,8 +71,8 @@ def getListOfOddAddends(numberToSum):
             workNumber+=returnList[25]
             returnList.pop(25)
 
+        listLen = len(returnList)
         while (workNumber > 0):    # If here, workNumber is guaranteed to be even. At this point, we cycle through returnList, and just add 2 to each existing odd entry in the list, keeping the entries odd, and shrinking workNumber down to zero in increments of 2.
-                listLen = len(returnList)
                 returnList[i]+=2
                 workNumber-=2
                 i = (i + 1) % listLen    # Used to ensure we don't cycle past returnList's list size. Every listLen entries i is reset to 0, whether i is 25 or 26 entries long.
@@ -118,16 +120,26 @@ def getRandomLetterString(randomLetterList, randomLetterCountList, sumToReach): 
 
 # Main program script
 
+rawLetterStringLength = input("Please enter a number between 1 and 9999 inclusive. A string of letters consisting of odd values of characters will be generated: ") # Prompt for number of characters in string
+filter = re.compile('^[0-9]{1,4}$')    # Get only numbers between 0 and 9999
+matchedNumber = filter.match(rawLetterStringLength)
+
+if (matchedNumber):
+    letterStringLength = int(matchedNumber.group())    # Input was numeric, is ok to convert to integer value.
+else:
+    print("The input was not numeric. Input must be a number between 1 and 9999 inclusive.")    # Input was not numeric or was too big, do not convert and exit program
+    quit()
 
 
-letterStringLength = int(input("Please enter a number. A string of letters consisting of odd values of characters will be generated: "))    # Prompt for number of characters in string
+
 stringOutput = randomLetterStringGenerator(letterStringLength)    # get string of random characters
 
 stringDescription = str()    # Create string holding final output
 
-if (stringOutput is None):
-    stringDescription = "String is empty or was not generated."    # If here, there was a problem with the user input or generating the list, notify that string is empty or not generated.
-else:
+if (stringOutput):
     stringDescription = "The following random sequence of characters was generated: " + stringOutput    # If here, the string was generated, put prompt and string output in the same variable.
+else:
+    stringDescription = "String is empty or was not generated."    # If here, there was a problem with the user input or generating the list, notify that string is empty or not generated.
+
 
 print(stringDescription)    # Print stringDescription variable
